@@ -1,2 +1,14 @@
+[![Build Status](https://travis-ci.org/flowcommerce/lib-akka.svg?branch=master)](https://travis-ci.com/flowcommerce/lib-akka)
+
 # lib-akka
-Akka utilities
+
+Library containing useful Akka utilities.
+
+## Publishing a new version
+
+    go run release.go
+
+## Publishing a new snapshot for local development
+
+    edit build.sbt and append -SNAPSHOT to version
+    sbt +publishLocal
