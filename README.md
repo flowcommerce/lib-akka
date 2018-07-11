@@ -1,0 +1,2 @@
+# lib-akka
+Akka utilities
