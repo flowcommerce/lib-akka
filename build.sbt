@@ -1,16 +1,13 @@
 name := "lib-akka"
 organization := "io.flow"
 
-version := "0.0.1"
-
 scalaVersion := "2.12.6"
-crossScalaVersions := Seq(scalaVersion.value, "2.11.12")
 
 javacOptions in doc := Seq("-encoding", "UTF-8")
 
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
-resolvers += "Artifactory" at "https://flow.artifactoryonline.com/flow/libs-release/"
+resolvers += "Artifactory" at "https://flow.jfrog.io/flow/libs-release/"
 
 lazy val akkaVersion = "2.5.13"
 
@@ -25,17 +22,18 @@ libraryDependencies ++= Seq(
 
 credentials += Credentials(
   "Artifactory Realm",
-  "flow.artifactoryonline.com",
+  "flow.jfrog.io",
   System.getenv("ARTIFACTORY_USERNAME"),
   System.getenv("ARTIFACTORY_PASSWORD")
 )
 
 publishTo := {
-  val host = "https://flow.artifactoryonline.com/flow"
+  val host = "https://flow.jfrog.io/flow"
   if (isSnapshot.value) {
     Some("Artifactory Realm" at s"$host/libs-snapshot-local;build.timestamp=" + new java.util.Date().getTime)
   } else {
     Some("Artifactory Realm" at s"$host/libs-release-local")
   }
 }
+
 version := "0.0.1"

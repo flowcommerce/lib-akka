@@ -47,10 +47,10 @@ class SafeReceive(r: Receive, logLevel: LogLevel, logUnhandled: Boolean)(implici
     case NonFatal(e) => log(v, Some(e))
   }.get
 
-  private def log(msg: Any, exception: Option[Throwable] = None)(implicit context: ActorContext): Unit = {
+  private def log(msg: => Any, exception: Option[Throwable] = None)(implicit context: ActorContext): Unit = {
     if (context.system.eventStream.logLevel >= logLevel) {
       val (str, clazz) = LogSource.fromAnyRef(context.self)
-      val event = exception.map(Error(_, str, clazz, msg.toString)).getOrElse(Error(str, clazz, msg))
+      val event = exception.fold(Error(str, clazz, msg.toString))(Error(_, str, clazz, msg.toString))
       context.system.eventStream.publish(event)
     }
   }
