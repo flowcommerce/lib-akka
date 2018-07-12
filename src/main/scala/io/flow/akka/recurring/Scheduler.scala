@@ -44,12 +44,12 @@ trait Scheduler extends Timers {
   }
 
   def scheduleRecurringWithDefault(configName: String,
-                                   default: FiniteDuration,
+                                   defaultInitial: FiniteDuration,
                                    msg: Any,
                                    receiver: ActorRef = this.self
                                   )(implicit ec: ExecutionContext): Unit = {
     val sc = ScheduleConfig.fromConfig(config, configName)
-    val initial = sc.initial.getOrElse(default)
+    val initial = sc.initial.getOrElse(defaultInitial)
     log.info(s"[${getClass.getName}] scheduleRecurringWithDefault[$configName]: Initial[$initial], Interval[${sc.interval}]")
     context.system.scheduler.schedule(initial, sc.interval, receiver, msg)(ec)
   }
