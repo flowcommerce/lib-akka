@@ -8,7 +8,8 @@ import scala.util.Try
 
 /**
   * Adds the capability of reacting to messages by running a Future,
-  * and waiting for that to finish before processing the next message, without blocking any thread.
+  * and waiting for that to finish before processing the next message, without blocking any thread
+  * (unless the future blocks threads itself, but that's beyond the scope of what this trait handles).
   *
   * Note: this uses the `Stash` capabilities of an actor.
   * While a Future is running, all messages will be stashed, and they will be unstashed once it completes.
@@ -29,11 +30,11 @@ trait FutureActor extends Stash {
 
   /**
     * Stashes messages until the passed future completes,
-    * then runs `handleResult` on the actor's currently assigned thread.
+    * then runs the `handleResult` callback with the result, on the actor's currently assigned thread.
     *
-    * After finishing, the actor's behavior should be the one it was using before calling this function.
+    * After the future finishes, the actor's behavior is reverted to the one it was using before calling this function.
     *
-    * WARNING: Any changes to the actor's state and calls to thread-unsafe methods in `f` aren't permitted.
+    * WARNING: Any changes to the actor's state and calls to thread-unsafe methods in `f` are discouraged.
     *
     * However, `handleResult` will be ran on the actor's assigned thread,
     * so it's fine to e.g. set variables, send messages or change behaviors in it.
