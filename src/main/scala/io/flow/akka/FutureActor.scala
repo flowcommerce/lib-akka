@@ -31,7 +31,12 @@ trait FutureActor extends Stash {
     * Stashes messages until the passed future completes,
     * then runs `handleResult` on the actor's currently assigned thread.
     *
-    * After finishing, the actor's behavior should be the one it was using befre calling this function.
+    * After finishing, the actor's behavior should be the one it was using before calling this function.
+    *
+    * WARNING: Any changes to the actor's state and calls to thread-unsafe methods in `f` aren't permitted.
+    *
+    * However, `handleResult` will be ran on the actor's assigned thread,
+    * so it's fine to e.g. set variables, send messages or change behaviors in it.
     * */
   def waitForAndHandle[T](f: Future[T])(handleResult: Try[T] => Unit): Unit = {
     //only used to send the message to self
@@ -39,8 +44,8 @@ trait FutureActor extends Stash {
 
     val waiting: Receive = {
       case Completed(result) =>
-        unstashAll()
         context.unbecome()
+        unstashAll()
 
         //trust me, that cast is safe
         //this call is at the end to ensure `handleResult` doesn't change behavior and forget the old one
@@ -51,9 +56,11 @@ trait FutureActor extends Stash {
 
     //shortcut to avoid switching behaviors if the future is already completed
     //in a vast minority of cases
-    if(!f.isCompleted) {
-      f.onComplete(res => self ! Completed(res))
+    if(f.isCompleted) {
+      handleResult(f.value.get)
+    } else {
       context.become(waiting, discardOld = false)
+      f.onComplete(res => self ! Completed(res))
     }
   }
 }

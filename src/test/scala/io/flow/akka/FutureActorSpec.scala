@@ -37,6 +37,18 @@ class FutureActorSpec extends TestKit(ActorSystem("SafeReceiveSpec")) with Async
     }
   }
 
+  class EchoActor(fut: () => Future[Unit]) extends Actor with FutureActor {
+    var success: Option[Boolean] = None
+
+    override def receive: Receive = {
+      case "tick" => waitForAndHandle(fut()) {
+        result => success = Some(result.isSuccess)
+      }
+
+      case "get" => sender() ! success
+    }
+  }
+
   "waitFor" when {
     "in normal conditions" should {
       "run futures sequentially" in {
@@ -67,6 +79,22 @@ class FutureActorSpec extends TestKit(ActorSystem("SafeReceiveSpec")) with Async
           }
 
           allValid mustBe true
+        }
+      }
+    }
+
+    "the future fails" should {
+      "run the handler anyway" in {
+        def fut(): Future[Unit] = delay(50.millis).flatMap(_ => Future.failed(new RuntimeException("oops")))
+
+        val actor = childActorOf(Props(new EchoActor(fut)))
+
+        actor ! "tick"
+
+        implicit val timeout: Timeout = Timeout(100.millis)
+
+        (actor ? "get").mapTo[Option[Boolean]].map {
+          _ mustBe Some(false)
         }
       }
     }
@@ -116,5 +144,30 @@ class FutureActorSpec extends TestKit(ActorSystem("SafeReceiveSpec")) with Async
         }
       }
     }
+
+    "the future is completed" should {
+      implicit val timeout: Timeout = Timeout(50.millis)
+
+      "still run the handler" in {
+        val actor = childActorOf(Props(new EchoActor(() => Future.unit)))
+
+        actor ! "tick"
+
+        (actor ? "get").mapTo[Option[Boolean]].map {
+          _ mustBe Some(true)
+        }
+      }
+
+      "run the handler even with a failed future" in {
+        val actor = childActorOf(Props(new EchoActor(() => Future.failed(new RuntimeException("boom")))))
+
+        actor ! "tick"
+
+        (actor ? "get").mapTo[Option[Boolean]].map {
+          _ mustBe Some(false)
+        }
+      }
+    }
   }
+
 }
