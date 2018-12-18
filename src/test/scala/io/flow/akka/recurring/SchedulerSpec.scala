@@ -10,7 +10,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class SchedulerSpec extends TestKit(ActorSystem("SchedulerSpec")) with ImplicitSender
   with WordSpecLike with Matchers with BeforeAndAfterAll {
 
-  override def afterAll {
+  override def afterAll: Unit = {
     TestKit.shutdownActorSystem(system)
   }
 
@@ -21,6 +21,7 @@ class SchedulerSpec extends TestKit(ActorSystem("SchedulerSpec")) with ImplicitS
 
         override def preStart(): Unit = {
           scheduleRecurring(ScheduleConfig(50.millis, Some(100.millis)), "tick")
+          ()
         }
 
         override def receive: Receive = {
