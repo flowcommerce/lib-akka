@@ -1,6 +1,6 @@
 package io.flow.akka.recurring
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Timers}
+import akka.actor.{Actor, ActorLogging, ActorRef, Cancellable, Timers}
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
@@ -33,7 +33,7 @@ trait Scheduler extends Timers {
   def scheduleRecurring(sc: ScheduleConfig,
                         msg: Any,
                         receiver: ActorRef = this.self
-                       )(implicit ec: ExecutionContext): Unit = {
+                       )(implicit ec: ExecutionContext): Cancellable = {
     log.info(s"[${getClass.getName}] scheduleRecurring[$sc]: Initial[${sc.initial}], Interval[${sc.interval}]")
     context.system.scheduler.schedule(sc.initial.getOrElse(sc.interval), sc.interval, receiver, msg)(ec)
   }
@@ -42,7 +42,7 @@ trait Scheduler extends Timers {
                                    defaultInitial: FiniteDuration,
                                    msg: Any,
                                    receiver: ActorRef = this.self
-                                  )(implicit ec: ExecutionContext): Unit = {
+                                  )(implicit ec: ExecutionContext): Cancellable = {
     val initial = sc.initial.getOrElse(defaultInitial)
     log.info(s"[${getClass.getName}] scheduleRecurringWithDefault[$sc]: Initial[$initial], Interval[${sc.interval}]")
     context.system.scheduler.schedule(initial, sc.interval, receiver, msg)(ec)

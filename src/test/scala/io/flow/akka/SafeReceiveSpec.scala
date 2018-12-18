@@ -10,7 +10,7 @@ import scala.concurrent.duration._
 class SafeReceiveSpec extends TestKit(ActorSystem("SafeReceiveSpec")) with ImplicitSender
   with WordSpecLike with Matchers with BeforeAndAfterAll {
 
-  override def afterAll {
+  override def afterAll: Unit = {
     TestKit.shutdownActorSystem(system)
   }
 
