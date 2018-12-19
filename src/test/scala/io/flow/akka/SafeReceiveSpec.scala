@@ -3,12 +3,15 @@ package io.flow.akka
 import akka.actor.{Actor, ActorSystem, Props}
 import akka.event.Logging
 import akka.testkit.{ImplicitSender, TestKit}
+import io.flow.log.RollbarLogger
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
 
 import scala.concurrent.duration._
 
 class SafeReceiveSpec extends TestKit(ActorSystem("SafeReceiveSpec")) with ImplicitSender
   with WordSpecLike with Matchers with BeforeAndAfterAll {
+
+  implicit val mockRollbar = RollbarLogger(None, Map.empty, None)
 
   override def afterAll: Unit = {
     TestKit.shutdownActorSystem(system)
