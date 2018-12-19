@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 class SafeReceiveSpec extends TestKit(ActorSystem("SafeReceiveSpec")) with ImplicitSender
   with WordSpecLike with Matchers with BeforeAndAfterAll {
 
-  implicit val mockRollbar = RollbarLogger(None, Map.empty, None)
+  implicit val mockRollbar = RollbarLogger.SimpleLogger
 
   override def afterAll: Unit = {
     TestKit.shutdownActorSystem(system)
