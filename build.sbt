@@ -22,6 +22,10 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.1" % Test
 )
 
+scalacOptions in (Compile, doc) ++= Seq(
+  "-no-link-warnings" // Suppresses problems with Scaladoc links
+)
+
 credentials += Credentials(
   "Artifactory Realm",
   "flow.jfrog.io",
