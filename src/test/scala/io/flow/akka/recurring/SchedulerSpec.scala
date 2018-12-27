@@ -32,6 +32,22 @@ class SchedulerSpec extends TestKit(ActorSystem("SchedulerSpec")) with ImplicitS
       expectMsg(1.second, "scheduled")
     }
 
+    "schedule a recurring function" in {
+      system.actorOf(Props(new Actor with ActorLogging with Scheduler {
+
+        override def preStart(): Unit = {
+          scheduleRecurring(ScheduleConfig(50.millis, Some(100.millis))){ self ! "tick" }
+          ()
+        }
+
+        override def receive: Receive = {
+          case "tick" => testActor ! "scheduled"
+        }
+      }))
+
+      expectMsg(1.second, "scheduled")
+    }
+
   }
 
 }
