@@ -1,4 +1,4 @@
-name := "lib-akka"
+name := "lib-akka-javatime"
 organization := "io.flow"
 
 scalaVersion := "2.12.6"
@@ -11,7 +11,7 @@ resolvers += "Artifactory" at "https://flow.jfrog.io/flow/libs-release/"
 
 lazy val akkaVersion = "2.5.13"
 
-val timeLibSuffix = ""
+val timeLibSuffix = "-javatime"
 
 libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.4.3",
