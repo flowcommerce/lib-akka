@@ -11,9 +11,11 @@ resolvers += "Artifactory" at "https://flow.jfrog.io/flow/libs-release/"
 
 lazy val akkaVersion = "2.5.13"
 
+val timeLibSuffix = ""
+
 libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.4.3",
-  "io.flow" %% "lib-log" % "0.0.47",
+  "io.flow" %% s"lib-log$timeLibSuffix" % "0.0.64",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Provided,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
   "com.typesafe.play" %% "play-json" % "2.6.10" % Provided,
@@ -42,5 +44,4 @@ publishTo := {
   }
 }
 
-version := "0.1.2"
 version := "0.1.2"
