@@ -15,7 +15,7 @@ val timeLibSuffix = "-javatime"
 
 libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.4.3",
-  "io.flow" %% s"lib-log$timeLibSuffix" % "0.0.64",
+  "io.flow" %% s"lib-log$timeLibSuffix" % "0.0.71",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Provided,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
   "com.typesafe.play" %% "play-json" % "2.6.10" % Provided,
@@ -44,4 +44,4 @@ publishTo := {
   }
 }
 
-version := "0.1.3"
+version := "0.1.4"
