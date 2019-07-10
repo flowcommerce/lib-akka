@@ -1,4 +1,4 @@
-name := "lib-akka-javatime"
+name := "lib-akka"
 organization := "io.flow"
 
 scalaVersion := "2.12.8"
