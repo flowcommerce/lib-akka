@@ -16,7 +16,7 @@ lazy val akkaVersion = "2.5.25"
 val timeLibSuffix = ""
 
 libraryDependencies ++= Seq(
-  "com.iheart" %% "ficus" % "1.4.3",
+  "com.iheart" %% "ficus" % "1.4.7",
   "io.flow" %% s"lib-log$timeLibSuffix" % "0.0.82",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Provided,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
