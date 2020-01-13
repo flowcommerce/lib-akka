@@ -1,7 +1,7 @@
 name := "lib-akka"
 organization := "io.flow"
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.10"
 
 javacOptions in doc := Seq("-encoding", "UTF-8")
 
