@@ -1,4 +1,4 @@
-name := "lib-akka"
+name := "lib-akka-akka26"
 organization := "io.flow"
 
 scalaVersion := "2.13.1"
