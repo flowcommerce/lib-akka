@@ -35,7 +35,7 @@ trait Scheduler extends Timers {
                         receiver: ActorRef = this.self
                        )(implicit ec: ExecutionContext): Cancellable = {
     log.info(s"[${getClass.getName}] scheduleRecurring[$sc]")
-    context.system.scheduler.schedule(sc.initial.getOrElse(sc.interval), sc.interval, receiver, msg)
+    context.system.scheduler.scheduleWithFixedDelay(sc.initial.getOrElse(sc.interval), sc.interval, receiver, msg)
   }
 
   def scheduleRecurringWithDefault(sc: ScheduleConfig,
@@ -45,14 +45,14 @@ trait Scheduler extends Timers {
                                   )(implicit ec: ExecutionContext): Cancellable = {
     val initial = sc.initial.getOrElse(defaultInitial)
     log.info(s"[${getClass.getName}] scheduleRecurringWithDefault[$sc]: Initial[$initial]")
-    context.system.scheduler.schedule(initial, sc.interval, receiver, msg)
+    context.system.scheduler.scheduleWithFixedDelay(initial, sc.interval, receiver, msg)
   }
 
   def scheduleRecurring(sc: ScheduleConfig
                       )(f: => Unit
                       )(implicit ec: ExecutionContext): Cancellable = {
     log.info(s"[${getClass.getName}] scheduleFunction[$sc")
-    context.system.scheduler.schedule(sc.initial.getOrElse(sc.interval), sc.interval)(f)
+    context.system.scheduler.scheduleWithFixedDelay(sc.initial.getOrElse(sc.interval), sc.interval)(() => f)
   }
 
 }
