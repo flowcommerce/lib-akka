@@ -9,7 +9,7 @@ licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
 resolvers += "Artifactory" at "https://flow.jfrog.io/flow/libs-release/"
 
-lazy val akkaVersion = "2.6.1"
+lazy val akkaVersion = "2.6.4"
 
 libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.4.7",
