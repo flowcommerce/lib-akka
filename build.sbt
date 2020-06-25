@@ -22,9 +22,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
   "com.typesafe.play" %% "play-json" % "2.8.1" % Provided,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
-  "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion % Test,
-  "com.typesafe.akka" %% "akka-protobuf-v3" % akkaVersion % Test,
-  "com.typesafe.akka" %% "akka-stream" % akkaVersion % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
   "org.scalatest" %% "scalatest" % "3.0.8" % Test
 )
