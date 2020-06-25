@@ -9,13 +9,19 @@ licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
 resolvers += "Artifactory" at "https://flow.jfrog.io/flow/libs-release/"
 
+// Must match typesafe play version
+//   com.typesafe.akka:akka-actor-typed_2.13:2.6.3
+// pulled in by
+//   com.typesafe.play:play_2.13:2.8.1
+lazy val akkaVersion = "2.6.3"
+
 libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.4.7",
   "io.flow" %% s"lib-log" % "0.1.14",
-  "com.typesafe.akka" %% "akka-actor" % "2.6.6" % Provided,
-  "com.typesafe.akka" %% "akka-slf4j" % "2.6.6" % Provided,
+  "com.typesafe.akka" %% "akka-actor" % akkaVersion % Provided,
+  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
   "com.typesafe.play" %% "play-json" % "2.8.1" % Provided,
-  "com.typesafe.akka" %% "akka-testkit" % "2.6.6" % Test,
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
   "org.scalatest" %% "scalatest" % "3.0.8" % Test
 )
