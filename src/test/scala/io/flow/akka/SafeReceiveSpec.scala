@@ -4,12 +4,14 @@ import akka.actor.{Actor, ActorSystem, Props}
 import akka.event.Logging
 import akka.testkit.{ImplicitSender, TestKit}
 import io.flow.log.RollbarLogger
-import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
 import scala.concurrent.duration._
 
 class SafeReceiveSpec extends TestKit(ActorSystem("SafeReceiveSpec")) with ImplicitSender
-  with WordSpecLike with Matchers with BeforeAndAfterAll {
+  with AnyWordSpecLike with Matchers with BeforeAndAfterAll {
 
   implicit val mockRollbar = RollbarLogger.SimpleLogger
 
