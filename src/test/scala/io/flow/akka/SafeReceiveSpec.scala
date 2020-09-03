@@ -15,7 +15,7 @@ class SafeReceiveSpec extends TestKit(ActorSystem("SafeReceiveSpec")) with Impli
 
   implicit val mockRollbar = RollbarLogger.SimpleLogger
 
-  override def afterAll: Unit = {
+  override def afterAll(): Unit = {
     TestKit.shutdownActorSystem(system)
   }
 
