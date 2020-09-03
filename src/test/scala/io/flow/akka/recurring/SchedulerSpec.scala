@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 class SchedulerSpec extends TestKit(ActorSystem("SchedulerSpec")) with ImplicitSender
   with AnyWordSpecLike with Matchers with BeforeAndAfterAll {
 
-  override def afterAll: Unit = {
+  override def afterAll(): Unit = {
     TestKit.shutdownActorSystem(system)
   }
 
