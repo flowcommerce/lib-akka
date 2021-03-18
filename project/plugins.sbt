@@ -1,5 +1,5 @@
 logLevel := Level.Warn
-addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.16")
+addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.17")
 
 resolvers += "Flow Plugins" at "https://flow.jfrog.io/flow/plugins-release/"
 
