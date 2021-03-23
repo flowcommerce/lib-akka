@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/flowcommerce/lib-akka.svg?branch=master)](https://travis-ci.com/flowcommerce/lib-akka)
+[![Build Status](https://travis-ci.org/flowcommerce/lib-akka.svg?branch=main)](https://travis-ci.com/flowcommerce/lib-akka)
 
 # lib-akka
 
