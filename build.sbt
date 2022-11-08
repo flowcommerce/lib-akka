@@ -1,7 +1,7 @@
 name := "lib-akka-akka26"
 organization := "io.flow"
 
-scalaVersion := "2.13.6"
+scalaVersion := "2.13.10"
 
 lazy val allScalacOptions = Seq(
   "-feature",
