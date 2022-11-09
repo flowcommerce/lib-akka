@@ -20,8 +20,8 @@ licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
 resolvers += "Artifactory" at "https://flow.jfrog.io/flow/libs-release/"
 
-// Must match typesafe play version - https://github.com/playframework/playframework/blob/2.8.15/project/Dependencies.scala#L10
-lazy val akkaVersion = "2.6.19"
+// Must match typesafe play version - https://github.com/playframework/playframework/blob/2.8.18/project/Dependencies.scala#L10
+lazy val akkaVersion = "2.6.20"
 
 libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.5.2",
