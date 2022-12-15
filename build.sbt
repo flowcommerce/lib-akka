@@ -3,6 +3,9 @@ organization := "io.flow"
 
 scalaVersion := "2.13.10"
 
+enablePlugins(GitVersioning)
+git.useGitDescribe := true
+
 lazy val allScalacOptions = Seq(
   "-feature",
   "-Xfatal-warnings",
@@ -20,7 +23,6 @@ licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
 resolvers += "Artifactory" at "https://flow.jfrog.io/flow/libs-release/"
 
-// Must match typesafe play version - https://github.com/playframework/playframework/blob/2.8.x/project/Dependencies.scala#L10
 lazy val akkaVersion = "2.6.20"
 
 libraryDependencies ++= Seq(
@@ -56,4 +58,3 @@ publishTo := {
   }
 }
 
-version := "0.1.86"
