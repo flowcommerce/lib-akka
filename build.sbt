@@ -27,15 +27,15 @@ lazy val akkaVersion = "2.6.20"
 
 libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.5.2",
-  "io.flow" %% s"lib-log" % "0.1.83",
+  "io.flow" %% s"lib-log" % "0.1.87",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Provided,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
-  "com.typesafe.play" %% "play-json" % "2.9.3" % Provided,
+  "com.typesafe.play" %% "play-json" % "2.9.4" % Provided,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
-  "org.scalatest" %% "scalatest" % "3.2.14" % Test,
-  "org.scalatest" %% "scalatest-mustmatchers" % "3.2.14" % Test,
-  "org.scalatest" %% "scalatest-wordspec" % "3.2.14" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.15" % Test,
+  "org.scalatest" %% "scalatest-mustmatchers" % "3.2.15" % Test,
+  "org.scalatest" %% "scalatest-wordspec" % "3.2.15" % Test,
 )
 
 Compile / doc / scalacOptions ++= Seq(
