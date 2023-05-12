@@ -30,13 +30,13 @@ private[actor] final class ReaperActor extends Actor with ActorLogging {
       watchedActors += ref
       log.info(s"Watching actor ${ref.path}")
 
-    case ReaperActor.Register(hook) =>
-      watchedNotifiables += hook
-      log.info(s"Watching shutdown hook $hook")
+    case ReaperActor.Register(notifiable) =>
+      watchedNotifiables += notifiable
+      log.info(s"Watching notifiable $notifiable")
 
     case ReaperActor.Reap =>
       if (watchedActors.isEmpty && watchedNotifiables.isEmpty) {
-        log.info(s"All watched actors and hooks stopped")
+        log.info(s"All watched actors and notifiables stopped")
         stopSent = false // for re-use within tests
         sender() ! akka.Done
       } else {
@@ -45,7 +45,7 @@ private[actor] final class ReaperActor extends Actor with ActorLogging {
           watchedActors.foreach { ref =>
             ref ! PoisonPill // Allow actors to process all messages in mailbox before stopping
           }
-          log.info(s"Sending stop to all (${watchedNotifiables.size}) watched shutdown hooks")
+          log.info(s"Sending stop to all (${watchedNotifiables.size}) watched notifiables")
           watchedNotifiables.foreach { notifiable =>
             notifiable.shutdownInitiated()
           }
