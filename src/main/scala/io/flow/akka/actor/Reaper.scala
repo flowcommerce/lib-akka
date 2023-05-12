@@ -3,7 +3,7 @@ package io.flow.akka.actor
 import akka.actor.{ActorSystem, Extension, ExtensionId, ExtensionIdProvider, Props}
 import akka.pattern.ask
 import akka.util.Timeout
-import io.flow.util.ShutdownNotifiable
+import io.flow.util.ShutdownNotified
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
@@ -27,7 +27,7 @@ final class Reaper private[actor] (system: ActorSystem) extends Extension {
 
   def watch(ref: akka.actor.ActorRef): Unit = reaper ! ReaperActor.Watch(ref)
 
-  def watch(notifiable: ShutdownNotifiable): Unit = reaper ! ReaperActor.Register(notifiable)
+  def watch(notifiable: ShutdownNotified): Unit = reaper ! ReaperActor.Register(notifiable)
 
   def reapAsync()(implicit timeout: Timeout = 60.seconds): Future[akka.Done] = {
     (reaper ? ReaperActor.Reap).mapTo[akka.Done]

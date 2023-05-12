@@ -1,7 +1,7 @@
 package io.flow.akka.actor
 
 import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Terminated}
-import io.flow.util.ShutdownNotifiable
+import io.flow.util.ShutdownNotified
 
 import javax.inject.Singleton
 import scala.collection.mutable.{Set => MutableSet}
@@ -10,7 +10,7 @@ object ReaperActor {
   val Name: String = "flow-reaper-actor"
 
   case class Watch(ref: ActorRef)
-  case class Register(notifiable: ShutdownNotifiable)
+  case class Register(notifiable: ShutdownNotified)
   case object Reap
 }
 
@@ -21,7 +21,7 @@ object ReaperActor {
 @Singleton
 private[actor] final class ReaperActor extends Actor with ActorLogging {
   private[this] val watchedActors = MutableSet.empty[ActorRef]
-  private[this] val watchedNotifiables = MutableSet.empty[ShutdownNotifiable]
+  private[this] val watchedNotifiables = MutableSet.empty[ShutdownNotified]
   @volatile private[this] var stopSent: Boolean = false
 
   override def receive: Receive = {

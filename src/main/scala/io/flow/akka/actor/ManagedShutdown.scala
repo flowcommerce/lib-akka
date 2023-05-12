@@ -1,9 +1,11 @@
 package io.flow.akka.actor
 
 import akka.actor.ActorSystem
-import io.flow.util.{ShutdownNotifiable, Shutdownable}
+import io.flow.util.{ShutdownNotified, Shutdownable}
 
-trait ShutdownNotified extends Shutdownable with ShutdownNotifiable {
+trait ManagedShutdown extends ShutdownNotified {
+  self:  Shutdownable =>
+
   @volatile private var shutdown: Boolean = false
   def system: ActorSystem
 
