@@ -3,6 +3,7 @@ package io.flow.akka.actor
 import akka.actor.{ActorSystem, Extension, ExtensionId, ExtensionIdProvider, Props}
 import akka.pattern.ask
 import akka.util.Timeout
+import io.flow.util.ShutdownNotifiable
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt

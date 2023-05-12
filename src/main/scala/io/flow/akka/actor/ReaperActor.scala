@@ -1,6 +1,7 @@
 package io.flow.akka.actor
 
 import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Terminated}
+import io.flow.util.ShutdownNotifiable
 
 import javax.inject.Singleton
 import scala.collection.mutable.{Set => MutableSet}
