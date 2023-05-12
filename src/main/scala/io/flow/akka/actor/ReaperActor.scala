@@ -9,6 +9,7 @@ object ReaperActor {
   val Name: String = "flow-reaper-actor"
 
   case class Watch(ref: ActorRef)
+  case class WatchHook(hook: ShutdownHook)
   case object Reap
 }
 
@@ -18,33 +19,43 @@ object ReaperActor {
  */
 @Singleton
 private[actor] final class ReaperActor extends Actor with ActorLogging {
-  private[this] val watched = MutableSet.empty[ActorRef]
-  private[this] var stopSent: Boolean = false
+  private[this] val watchedActors = MutableSet.empty[ActorRef]
+  private[this] val watchedHooks = MutableSet.empty[ShutdownHook]
+  @volatile private[this] var stopSent: Boolean = false
 
   override def receive: Receive = {
     case ReaperActor.Watch(ref) =>
       context.watch(ref)
-      watched += ref
-      log.info(s"Watching ${ref.path}")
+      watchedActors += ref
+      log.info(s"Watching actor ${ref.path}")
+
+    case ReaperActor.WatchHook(hook) =>
+      watchedHooks += hook
+      log.info(s"Watching shutdown hook $hook")
 
     case ReaperActor.Reap =>
-      if (watched.isEmpty) {
-        log.info(s"All watched actors stopped")
+      if (watchedActors.isEmpty && watchedHooks.isEmpty) {
+        log.info(s"All watched actors and hooks stopped")
         stopSent = false // for re-use within tests
         sender() ! akka.Done
       } else {
         if (!stopSent) {
-          log.info(s"Sending stop to all (${watched.size}) watched actors")
-          watched.foreach { ref =>
+          log.info(s"Sending stop to all (${watchedActors.size}) watched actors")
+          watchedActors.foreach { ref =>
             ref ! PoisonPill // Allow actors to process all messages in mailbox before stopping
           }
+          log.info(s"Sending stop to all (${watchedHooks.size}) watched shutdown hooks")
+          watchedHooks.foreach { hook =>
+            hook.doShutdown()
+          }
+          watchedHooks.clear()
           stopSent = true
         }
         self forward ReaperActor.Reap
       }
 
     case Terminated(ref) =>
-      watched -= ref
+      watchedActors -= ref
       log.info(s"Stopped watching ${ref.path}")
   }
 }
