@@ -9,7 +9,7 @@ object ReaperActor {
   val Name: String = "flow-reaper-actor"
 
   case class Watch(ref: ActorRef)
-  case class WatchHook(hook: ShutdownHook)
+  case class Register(notifiable: ShutdownNotifiable)
   case object Reap
 }
 
@@ -20,7 +20,7 @@ object ReaperActor {
 @Singleton
 private[actor] final class ReaperActor extends Actor with ActorLogging {
   private[this] val watchedActors = MutableSet.empty[ActorRef]
-  private[this] val watchedHooks = MutableSet.empty[ShutdownHook]
+  private[this] val watchedNotifiables = MutableSet.empty[ShutdownNotifiable]
   @volatile private[this] var stopSent: Boolean = false
 
   override def receive: Receive = {
@@ -29,12 +29,12 @@ private[actor] final class ReaperActor extends Actor with ActorLogging {
       watchedActors += ref
       log.info(s"Watching actor ${ref.path}")
 
-    case ReaperActor.WatchHook(hook) =>
-      watchedHooks += hook
+    case ReaperActor.Register(hook) =>
+      watchedNotifiables += hook
       log.info(s"Watching shutdown hook $hook")
 
     case ReaperActor.Reap =>
-      if (watchedActors.isEmpty && watchedHooks.isEmpty) {
+      if (watchedActors.isEmpty && watchedNotifiables.isEmpty) {
         log.info(s"All watched actors and hooks stopped")
         stopSent = false // for re-use within tests
         sender() ! akka.Done
@@ -44,11 +44,11 @@ private[actor] final class ReaperActor extends Actor with ActorLogging {
           watchedActors.foreach { ref =>
             ref ! PoisonPill // Allow actors to process all messages in mailbox before stopping
           }
-          log.info(s"Sending stop to all (${watchedHooks.size}) watched shutdown hooks")
-          watchedHooks.foreach { hook =>
-            hook.doShutdown()
+          log.info(s"Sending stop to all (${watchedNotifiables.size}) watched shutdown hooks")
+          watchedNotifiables.foreach { notifiable =>
+            notifiable.shutdownInitiated()
           }
-          watchedHooks.clear()
+          watchedNotifiables.clear()
           stopSent = true
         }
         self forward ReaperActor.Reap

@@ -26,7 +26,7 @@ final class Reaper private[actor] (system: ActorSystem) extends Extension {
 
   def watch(ref: akka.actor.ActorRef): Unit = reaper ! ReaperActor.Watch(ref)
 
-  def watch(hook: ShutdownHook): Unit = reaper ! ReaperActor.WatchHook(hook)
+  def watch(notifiable: ShutdownNotifiable): Unit = reaper ! ReaperActor.Register(notifiable)
 
   def reapAsync()(implicit timeout: Timeout = 60.seconds): Future[akka.Done] = {
     (reaper ? ReaperActor.Reap).mapTo[akka.Done]
