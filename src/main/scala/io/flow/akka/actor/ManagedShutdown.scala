@@ -12,13 +12,17 @@ trait ManagedShutdown extends ShutdownNotified {
 
   Reaper.get(system).watch(this)
 
-  def shutdown(): Unit = ()
+  def shutdown(): Unit = {
+    shutdownState = true
+  }
 
   override def isShutdown: Boolean = shutdownState
 
   override def shutdownInitiated(): Unit = {
-    shutdownState = true
-    shutdown()
+    if (!shutdownState) {
+      shutdown()
+      shutdownState = true
+    }
   }
 
 }
