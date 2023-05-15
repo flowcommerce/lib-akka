@@ -6,16 +6,19 @@ import io.flow.util.{ShutdownNotified, Shutdownable}
 trait ManagedShutdown extends ShutdownNotified {
   self: Shutdownable =>
 
-  @volatile private var shutdown: Boolean = false
+  @volatile private var shutdownState: Boolean = false
 
   def system: ActorSystem
 
   Reaper.get(system).watch(this)
 
-  override def isShutdown: Boolean = shutdown
+  def shutdown(): Unit = ()
+
+  override def isShutdown: Boolean = shutdownState
 
   override def shutdownInitiated(): Unit = {
-    shutdown = true
+    shutdownState = true
+    shutdown()
   }
 
 }
