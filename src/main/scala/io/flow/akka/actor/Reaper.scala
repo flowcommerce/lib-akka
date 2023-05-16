@@ -28,7 +28,8 @@ final class Reaper private[actor] (system: ActorSystem) extends Extension {
   def watch(ref: akka.actor.ActorRef): Unit = reaper ! ReaperActor.Watch(ref)
 
   def watch(notifiable: ShutdownNotified): Unit = {
-    val wrapper = system.actorOf(Props(classOf[NotifiableReapingActor], notifiable), s"wrapper-$notifiable@${notifiable.hashCode()}")
+    val id = s"$notifiable${notifiable.hashCode()}Wrapper".filter(_.isLetterOrDigit)
+    val wrapper = system.actorOf(Props(classOf[NotifiableReapingActor], notifiable), id)
     watch(wrapper)
   }
 
