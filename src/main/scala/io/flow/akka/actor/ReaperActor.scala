@@ -1,16 +1,14 @@
 package io.flow.akka.actor
 
 import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Terminated}
-import io.flow.util.ShutdownNotified
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 import scala.collection.mutable.{Set => MutableSet}
 
 object ReaperActor {
   val Name: String = "flow-reaper-actor"
 
   case class Watch(ref: ActorRef)
-  case class Register(notifiable: ShutdownNotified)
   case object Reap
 }
 
@@ -19,9 +17,9 @@ object ReaperActor {
  * Intended for use in graceful shutdown with CoordinatedShutdown.
  */
 @Singleton
-private[actor] final class ReaperActor extends Actor with ActorLogging {
+private[actor] final class ReaperActor @Inject() (
+) extends Actor with ActorLogging {
   private[this] val watchedActors = MutableSet.empty[ActorRef]
-  private[this] val watchedNotifiables = MutableSet.empty[ShutdownNotified]
   @volatile private[this] var stopSent: Boolean = false
 
   override def receive: Receive = {
@@ -30,13 +28,9 @@ private[actor] final class ReaperActor extends Actor with ActorLogging {
       watchedActors += ref
       log.info(s"Watching actor ${ref.path}")
 
-    case ReaperActor.Register(notifiable) =>
-      watchedNotifiables += notifiable
-      log.info(s"Watching notifiable $notifiable")
-
     case ReaperActor.Reap =>
-      if (watchedActors.isEmpty && watchedNotifiables.isEmpty) {
-        log.info(s"All watched actors and notifiables stopped")
+      if (watchedActors.isEmpty) {
+        log.info("All watched actors and notifiables stopped")
         stopSent = false // for re-use within tests
         sender() ! akka.Done
       } else {
@@ -45,11 +39,6 @@ private[actor] final class ReaperActor extends Actor with ActorLogging {
           watchedActors.foreach { ref =>
             ref ! PoisonPill // Allow actors to process all messages in mailbox before stopping
           }
-          log.info(s"Sending stop to all (${watchedNotifiables.size}) watched notifiables")
-          watchedNotifiables.foreach { notifiable =>
-            notifiable.shutdownInitiated()
-          }
-          watchedNotifiables.clear()
           stopSent = true
         }
         self forward ReaperActor.Reap
