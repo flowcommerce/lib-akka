@@ -30,7 +30,7 @@ private[actor] final class ReaperActor @Inject() (
 
     case ReaperActor.Reap =>
       if (watchedActors.isEmpty) {
-        log.info("All watched actors and notifiables stopped")
+        log.info("All watched actors stopped")
         stopSent = false // for re-use within tests
         sender() ! akka.Done
       } else {
