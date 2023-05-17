@@ -2,9 +2,11 @@ package io.flow.akka.actor
 
 import akka.actor.{ActorLogging, ActorSelection, ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestActors, TestKit, TestProbe}
+import io.flow.util.ShutdownNotified
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import scala.concurrent.duration._
 
 import java.util.concurrent.atomic.AtomicLong
 
@@ -42,7 +44,7 @@ class ReaperActorSpec extends TestKit(ActorSystem("ReaperActorSpec")) with Impli
   "ReaperActor" must {
     "terminate watched actors" in {
       val reaped = system.actorOf(TestActors.blackholeProps)
-      reaper ! ReaperActor.Watch(reaped)
+      Reaper.get(system).watch(reaped)
       val probe = TestProbe()
       probe.watch(reaped)
 
@@ -50,11 +52,36 @@ class ReaperActorSpec extends TestKit(ActorSystem("ReaperActorSpec")) with Impli
       probe.expectTerminated(reaped)
       expectMsg(akka.Done) // from reaper when all watched actors have terminated
     }
+
+    "terminate watched notifiables" in {
+      var called1 = false
+      val notifiable1 = new ShutdownNotified {
+        override def shutdownInitiated(): Unit = {
+          called1 = true
+        }
+      }
+      Reaper.get(system).watch(notifiable1)
+
+      var called2 = false
+      val notifiable2 = new ShutdownNotified {
+        override def shutdownInitiated(): Unit = {
+          Thread.sleep(3000)
+          called2 = true
+        }
+      }
+      Reaper.get(system).watch(notifiable2)
+
+      reaper ! ReaperActor.Reap
+      expectMsg(4.seconds, akka.Done) // from reaper when all watched actors have terminated
+      called1 mustBe true
+      called2 mustBe true
+    }
   }
 
   "allow all messages in watched actors to process" in {
     val accumulator = new AtomicLong(0)
     val reaped = system.actorOf(Props(new SleepyActor(accumulator)))
+    Reaper.get(system).watch(reaped)
     val probe = TestProbe()
     probe.watch(reaped)
 
