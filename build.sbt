@@ -27,8 +27,8 @@ lazy val akkaVersion = "2.6.20"
 
 libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.5.2",
-  "io.flow" %% "lib-util" % "0.2.20",
-  "io.flow" %% s"lib-log" % "0.1.97",
+  "io.flow" %% "lib-util" % "0.2.22",
+  "io.flow" %% s"lib-log" % "0.1.99",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Provided,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
   "com.typesafe.play" %% "play-json" % "2.9.4" % Provided,
