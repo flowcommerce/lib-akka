@@ -1,7 +1,7 @@
 pipeline {
   agent {
     kubernetes {
-      inheritFrom 'default-dependence-day'
+      inheritFrom 'default'
     }
   }
   
@@ -29,7 +29,7 @@ pipeline {
     stage('Release') {
       when { branch 'main' }
       steps {
-        container('dependence-day') {
+        container('dd') {
           withCredentials([
             usernamePassword(
               credentialsId: 'jenkins-x-jfrog',
