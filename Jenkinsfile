@@ -2,7 +2,6 @@ pipeline {
   agent {
     kubernetes {
       inheritFrom 'default-dependence-day'
-      // test
     }
   }
   
