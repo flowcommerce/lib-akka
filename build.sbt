@@ -65,3 +65,5 @@ publishTo := {
   }
 }
 
+scalacOptions ++= allScalacOptions ++ Seq("-release", "17")
+scalafmtOnCompile := true

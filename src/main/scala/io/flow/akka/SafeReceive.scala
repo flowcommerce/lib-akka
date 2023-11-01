@@ -9,8 +9,7 @@ import io.flow.log.RollbarLogger
 import scala.util.Try
 import scala.util.control.NonFatal
 
-/**
-  * Wraps an [[akka.actor.Actor.Receive]] block that will log exceptions and unhandled messages.
+/** Wraps an [[akka.actor.Actor.Receive]] block that will log exceptions and unhandled messages.
   *
   * Example usage:
   *
@@ -18,9 +17,9 @@ import scala.util.control.NonFatal
   *
   * def receive = io.flow.akka.SafeReceive {
   *
-  *   case m: ExampleActor.Messages.ExampleMessage => ...
+  * case m: ExampleActor.Messages.ExampleMessage => ...
   *
-  *   case m: Any => ...
+  * case m: Any => ...
   *
   * }
   */
@@ -34,18 +33,21 @@ object SafeReceive {
   }
 }
 
-class SafeReceive(r: Receive, logLevel: LogLevel, logUnhandled: Boolean)(implicit context: ActorContext, rollbar: RollbarLogger) extends Receive {
+class SafeReceive(r: Receive, logLevel: LogLevel, logUnhandled: Boolean)(implicit
+  context: ActorContext,
+  rollbar: RollbarLogger
+) extends Receive {
 
   override def isDefinedAt(v: Any): Boolean = {
     val defined = r.isDefinedAt(v)
-    if(!defined && logUnhandled) {
+    if (!defined && logUnhandled) {
       log("[SafeReceive] Received unhandled message", v) // Logs messages unhandled by the actor here
     }
     defined
   }
 
-  override def apply(v: Any): Unit = Try(r(v)).recover {
-    case NonFatal(e) => log("[SafeReceive] Exception in message handler", v, Some(e))
+  override def apply(v: Any): Unit = Try(r(v)).recover { case NonFatal(e) =>
+    log("[SafeReceive] Exception in message handler", v, Some(e))
   }.get
 
   private def log(errorMsg: String, actorMsg: => Any, exception: Option[Throwable] = None): Unit = {
@@ -57,16 +59,16 @@ class SafeReceive(r: Receive, logLevel: LogLevel, logUnhandled: Boolean)(implici
     }
     val l = rollbar.withKeyValue("actor_message", actorMsg.toString)
     (logLevel, exception) match {
-      case (Logging.ErrorLevel,   Some(ex)) => l.error(errorMsg, ex)
-      case (Logging.ErrorLevel,   None)     => l.error(errorMsg)
+      case (Logging.ErrorLevel, Some(ex)) => l.error(errorMsg, ex)
+      case (Logging.ErrorLevel, None) => l.error(errorMsg)
       case (Logging.WarningLevel, Some(ex)) => l.warn(errorMsg, ex)
-      case (Logging.WarningLevel, None)     => l.warn(errorMsg)
-      case (Logging.InfoLevel,    Some(ex)) => l.info(errorMsg, ex)
-      case (Logging.InfoLevel,    None)     => l.info(errorMsg)
-      case (Logging.DebugLevel,   Some(ex)) => l.debug(errorMsg, ex)
-      case (Logging.DebugLevel,   None)     => l.debug(errorMsg)
-      case (_,                    Some(ex)) => l.warn(errorMsg, ex)
-      case (_,                    None)     => l.warn(errorMsg)
+      case (Logging.WarningLevel, None) => l.warn(errorMsg)
+      case (Logging.InfoLevel, Some(ex)) => l.info(errorMsg, ex)
+      case (Logging.InfoLevel, None) => l.info(errorMsg)
+      case (Logging.DebugLevel, Some(ex)) => l.debug(errorMsg, ex)
+      case (Logging.DebugLevel, None) => l.debug(errorMsg)
+      case (_, Some(ex)) => l.warn(errorMsg, ex)
+      case (_, None) => l.warn(errorMsg)
     }
 
   }

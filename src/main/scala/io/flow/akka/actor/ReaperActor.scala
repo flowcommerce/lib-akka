@@ -12,13 +12,13 @@ object ReaperActor {
   case object Reap
 }
 
-/**
- * Actor that watches other actors and sends them a PoisonPill when it receives a Reap message.
- * Intended for use in graceful shutdown with CoordinatedShutdown.
- */
+/** Actor that watches other actors and sends them a PoisonPill when it receives a Reap message. Intended for use in
+  * graceful shutdown with CoordinatedShutdown.
+  */
 @Singleton
 private[actor] final class ReaperActor @Inject() (
-) extends Actor with ActorLogging {
+) extends Actor
+  with ActorLogging {
   private[this] val watchedActors = MutableSet.empty[ActorRef]
   @volatile private[this] var stopSent: Boolean = false
 
