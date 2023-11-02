@@ -14,18 +14,20 @@ object ReaperActorSpec {
   case class SleepFor(millis: Long)
 
   class SleepyActor(accumulator: AtomicLong) extends ReapedActor with ActorLogging {
-    override def receive = {
-      case SleepFor(millis) =>
-        val cumulativeMillis = accumulator.addAndGet(millis)
-        log.info(s"Sleeping for $cumulativeMillis ms")
-        Thread.sleep(cumulativeMillis)
+    override def receive = { case SleepFor(millis) =>
+      val cumulativeMillis = accumulator.addAndGet(millis)
+      log.info(s"Sleeping for $cumulativeMillis ms")
+      Thread.sleep(cumulativeMillis)
     }
   }
 }
 
-
-class ReaperActorSpec extends TestKit(ActorSystem("ReaperActorSpec")) with ImplicitSender
-  with AnyWordSpecLike with Matchers with BeforeAndAfterAll {
+class ReaperActorSpec
+  extends TestKit(ActorSystem("ReaperActorSpec"))
+  with ImplicitSender
+  with AnyWordSpecLike
+  with Matchers
+  with BeforeAndAfterAll {
 
   import ReaperActorSpec._
 
@@ -85,7 +87,7 @@ class ReaperActorSpec extends TestKit(ActorSystem("ReaperActorSpec")) with Impli
     val probe = TestProbe()
     probe.watch(reaped)
 
-    val messages = Seq(10L,20,30,40,50,100).map(SleepFor.apply)
+    val messages = Seq(10L, 20, 30, 40, 50, 100).map(SleepFor.apply)
     messages.foreach { message =>
       reaped ! message
     }

@@ -9,8 +9,12 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-class SchedulerSpec extends TestKit(ActorSystem("SchedulerSpec")) with ImplicitSender
-  with AnyWordSpecLike with Matchers with BeforeAndAfterAll {
+class SchedulerSpec
+  extends TestKit(ActorSystem("SchedulerSpec"))
+  with ImplicitSender
+  with AnyWordSpecLike
+  with Matchers
+  with BeforeAndAfterAll {
 
   override def afterAll(): Unit = {
     TestKit.shutdownActorSystem(system)
@@ -26,8 +30,8 @@ class SchedulerSpec extends TestKit(ActorSystem("SchedulerSpec")) with ImplicitS
           ()
         }
 
-        override def receive: Receive = {
-          case "tick" => testActor ! "scheduled"
+        override def receive: Receive = { case "tick" =>
+          testActor ! "scheduled"
         }
       }))
 
@@ -38,12 +42,12 @@ class SchedulerSpec extends TestKit(ActorSystem("SchedulerSpec")) with ImplicitS
       system.actorOf(Props(new Actor with ActorLogging with Scheduler {
 
         override def preStart(): Unit = {
-          scheduleRecurring(ScheduleConfig(50.millis, Some(100.millis))){ self ! "tick" }
+          scheduleRecurring(ScheduleConfig(50.millis, Some(100.millis))) { self ! "tick" }
           ()
         }
 
-        override def receive: Receive = {
-          case "tick" => testActor ! "scheduled"
+        override def receive: Receive = { case "tick" =>
+          testActor ! "scheduled"
         }
       }))
 

@@ -10,8 +10,12 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import scala.concurrent.duration._
 
-class SafeReceiveSpec extends TestKit(ActorSystem("SafeReceiveSpec")) with ImplicitSender
-  with AnyWordSpecLike with Matchers with BeforeAndAfterAll {
+class SafeReceiveSpec
+  extends TestKit(ActorSystem("SafeReceiveSpec"))
+  with ImplicitSender
+  with AnyWordSpecLike
+  with Matchers
+  with BeforeAndAfterAll {
 
   implicit val mockRollbar = RollbarLogger.SimpleLogger
 
@@ -25,8 +29,8 @@ class SafeReceiveSpec extends TestKit(ActorSystem("SafeReceiveSpec")) with Impli
       system.eventStream.subscribe(testActor, classOf[Logging.Error])
 
       val a = system.actorOf(Props(new Actor {
-        override def receive: Receive = SafeReceive {
-          case "boom" => throw new RuntimeException("BOOM!")
+        override def receive: Receive = SafeReceive { case "boom" =>
+          throw new RuntimeException("BOOM!")
         }
       }))
 
@@ -39,8 +43,8 @@ class SafeReceiveSpec extends TestKit(ActorSystem("SafeReceiveSpec")) with Impli
       system.eventStream.subscribe(testActor, classOf[Logging.Error])
 
       val a = system.actorOf(Props(new Actor {
-        override def receive: Receive = SafeReceive.withLogUnhandled {
-          case "test" => ()
+        override def receive: Receive = SafeReceive.withLogUnhandled { case "test" =>
+          ()
         }
       }))
 
