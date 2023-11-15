@@ -25,7 +25,7 @@ trait Scheduler extends Timers {
     *   an initial delay duration parameter to be appended to set the initial interval if you wish it to be different.
     */
   def scheduleRecurring(sc: ScheduleConfig, msg: Any, receiver: ActorRef = this.self)(implicit
-    ec: ExecutionContext
+    ec: ExecutionContext,
   ): Cancellable = {
     log.info(s"[${getClass.getName}] scheduleRecurring[$sc]")
     context.system.scheduler.scheduleWithFixedDelay(sc.initial.getOrElse(sc.interval), sc.interval, receiver, msg)
@@ -35,7 +35,7 @@ trait Scheduler extends Timers {
     sc: ScheduleConfig,
     defaultInitial: FiniteDuration,
     msg: Any,
-    receiver: ActorRef = this.self
+    receiver: ActorRef = this.self,
   )(implicit ec: ExecutionContext): Cancellable = {
     val initial = sc.initial.getOrElse(defaultInitial)
     log.info(s"[${getClass.getName}] scheduleRecurringWithDefault[$sc]: Initial[$initial]")

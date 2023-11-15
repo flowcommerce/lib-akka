@@ -35,7 +35,7 @@ object SafeReceive {
 
 class SafeReceive(r: Receive, logLevel: LogLevel, logUnhandled: Boolean)(implicit
   context: ActorContext,
-  rollbar: RollbarLogger
+  rollbar: RollbarLogger,
 ) extends Receive {
 
   override def isDefinedAt(v: Any): Boolean = {
