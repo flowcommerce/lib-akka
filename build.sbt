@@ -37,9 +37,9 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json" % "2.9.4" % Provided,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
-  "org.scalatest" %% "scalatest" % "3.2.18" % Test,
-  "org.scalatest" %% "scalatest-mustmatchers" % "3.2.18" % Test,
-  "org.scalatest" %% "scalatest-wordspec" % "3.2.18" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.17" % Test,
+  "org.scalatest" %% "scalatest-mustmatchers" % "3.2.17" % Test,
+  "org.scalatest" %% "scalatest-wordspec" % "3.2.17" % Test,
 )
 
 Test / javaOptions ++= Seq(
