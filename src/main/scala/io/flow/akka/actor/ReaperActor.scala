@@ -3,7 +3,7 @@ package io.flow.akka.actor
 import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Terminated}
 
 import javax.inject.{Inject, Singleton}
-import scala.collection.mutable.{Set => MutableSet}
+import scala.collection.mutable.{ListBuffer => MutableListBuffer}
 
 object ReaperActor {
   val Name: String = "flow-reaper-actor"
@@ -19,14 +19,16 @@ object ReaperActor {
 private[actor] final class ReaperActor @Inject() (
 ) extends Actor
   with ActorLogging {
-  private[this] val watchedActors = MutableSet.empty[ActorRef]
+  private[this] val watchedActors = MutableListBuffer.empty[ActorRef] // Ordering is important to us
   @volatile private[this] var stopSent: Boolean = false
 
   override def receive: Receive = {
     case ReaperActor.Watch(ref) =>
-      context.watch(ref)
-      watchedActors += ref
-      log.info(s"Watching actor ${ref.path}")
+      if (!watchedActors.contains(ref)) {
+        context.watch(ref)
+        watchedActors += ref
+        log.info(s"Watching actor ${ref.path}")
+      }
 
     case ReaperActor.Reap =>
       if (watchedActors.isEmpty) {
@@ -36,7 +38,9 @@ private[actor] final class ReaperActor @Inject() (
       } else {
         if (!stopSent) {
           log.info(s"Sending stop to all (${watchedActors.size}) watched actors")
-          watchedActors.foreach { ref =>
+          // Use LIFO in an attempt to unwind how the application initialized.  For example we would
+          // like anything erm related to be stopped after the actors which process the events.
+          watchedActors.reverse.foreach { ref =>
             ref ! PoisonPill // Allow actors to process all messages in mailbox before stopping
           }
           stopSent = true

@@ -56,27 +56,26 @@ class ReaperActorSpec
     }
 
     "terminate watched notifiables" in {
-      var called1 = false
+      val callStack = scala.collection.mutable.Stack.empty[Int]
       val notifiable1 = new ShutdownNotified {
         override def shutdownInitiated(): Unit = {
-          called1 = true
+          callStack.push(1)
         }
       }
       Reaper.get(system).watch(notifiable1)
 
-      var called2 = false
       val notifiable2 = new ShutdownNotified {
         override def shutdownInitiated(): Unit = {
           Thread.sleep(3000)
-          called2 = true
+          callStack.push(2)
         }
       }
       Reaper.get(system).watch(notifiable2)
 
       reaper ! ReaperActor.Reap
       expectMsg(4.seconds, akka.Done) // from reaper when all watched actors have terminated
-      called1 mustBe true
-      called2 mustBe true
+      callStack.pop() mustBe 2 // LIFO
+      callStack.pop() mustBe 1
     }
   }
 
