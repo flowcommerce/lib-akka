@@ -38,8 +38,7 @@ private[actor] final class ReaperActor @Inject() (
       } else {
         if (!stopSent) {
           log.info(s"Sending stop to all (${watchedActors.size}) watched actors")
-          // Use LIFO in an attempt to unwind how the application initialized.  For example we would
-          // like anything erm related to be stopped after the actors which process the events.
+          // Use LIFO in an attempt to unwind how the application initialized
           watchedActors.reverse.foreach { ref =>
             ref ! PoisonPill // Allow actors to process all messages in mailbox before stopping
           }
