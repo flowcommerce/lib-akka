@@ -2,7 +2,7 @@ package io.flow.akka.actor
 
 import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Terminated}
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 import scala.collection.mutable.{ListBuffer => MutableListBuffer}
 
 object ReaperActor {
