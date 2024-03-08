@@ -40,13 +40,15 @@ class ReaperActorSpec
     TestKit.shutdownActorSystem(system)
   }
 
+  private[this] val phase: ManagedShutdownPhase = ManagedShutdownPhase.ServiceRequestsDone
+
   private[this] def reaper: ActorSelection =
-    system.actorSelection("/user/" + ReaperActor.Name)
+    system.actorSelection("/user/" + ReaperActor.name(phase))
 
   "ReaperActor" must {
     "terminate watched actors" in {
       val reaped = system.actorOf(TestActors.blackholeProps)
-      Reaper.get(system).watch(reaped)
+      Reaper.get(system).watch(reaped, phase)
       val probe = TestProbe()
       probe.watch(reaped)
 
@@ -62,7 +64,7 @@ class ReaperActorSpec
           callStack.push(1)
         }
       }
-      Reaper.get(system).watch(notifiable1)
+      Reaper.get(system).watch(notifiable1, phase)
 
       val notifiable2 = new ShutdownNotified {
         override def shutdownInitiated(): Unit = {
@@ -70,7 +72,7 @@ class ReaperActorSpec
           callStack.push(2)
         }
       }
-      Reaper.get(system).watch(notifiable2)
+      Reaper.get(system).watch(notifiable2, phase)
 
       reaper ! ReaperActor.Reap
       expectMsg(4.seconds, akka.Done) // from reaper when all watched actors have terminated
@@ -82,7 +84,7 @@ class ReaperActorSpec
   "allow all messages in watched actors to process" in {
     val accumulator = new AtomicLong(0)
     val reaped = system.actorOf(Props(new SleepyActor(accumulator)))
-    Reaper.get(system).watch(reaped)
+    Reaper.get(system).watch(reaped, phase)
     val probe = TestProbe()
     probe.watch(reaped)
 

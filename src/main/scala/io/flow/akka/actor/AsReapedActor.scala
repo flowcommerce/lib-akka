@@ -6,5 +6,7 @@ import akka.actor.Actor
 trait AsReapedActor {
   this: Actor =>
 
-  Reaper.get(context.system).watch(self)
+  def shutdownPhase: ManagedShutdownPhase = ManagedShutdownPhase.ServiceRequestsDone
+
+  Reaper.get(context.system).watch(self, shutdownPhase)
 }

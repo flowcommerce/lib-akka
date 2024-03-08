@@ -1,6 +1,6 @@
 package io.flow.akka.actor
 
-import akka.actor.{ActorSystem, Extension, ExtensionId, ExtensionIdProvider, Props}
+import akka.actor.{ActorRef, ActorSystem, Extension, ExtensionId, ExtensionIdProvider, Props}
 import akka.pattern.ask
 import akka.util.Timeout
 import io.flow.util.ShutdownNotified
@@ -22,17 +22,29 @@ object Reaper extends ExtensionId[Reaper] with ExtensionIdProvider {
 }
 
 final class Reaper private[actor] (system: ActorSystem) extends Extension {
-  private[this] val reaper = system.actorOf(Props(classOf[ReaperActor]), ReaperActor.Name)
+  private[this] val reaperUnbind: ActorRef =
+    system.actorOf(Props(classOf[ReaperActor]), ReaperActor.name(ManagedShutdownPhase.ServiceUnbind))
+  private[this] val reaperRequestsDone: ActorRef =
+    system.actorOf(Props(classOf[ReaperActor]), ReaperActor.name(ManagedShutdownPhase.ServiceRequestsDone))
+  private[this] val reaperStop: ActorRef =
+    system.actorOf(Props(classOf[ReaperActor]), ReaperActor.name(ManagedShutdownPhase.ServiceStop))
 
-  def watch(ref: akka.actor.ActorRef): Unit = reaper ! ReaperActor.Watch(ref)
+  def watch(ref: akka.actor.ActorRef, phase: ManagedShutdownPhase): Unit =
+    reaper(phase) ! ReaperActor.Watch(ref)
 
-  def watch(notifiable: ShutdownNotified): Unit = {
+  def watch(notifiable: ShutdownNotified, phase: ManagedShutdownPhase): Unit = {
     val id = s"$notifiable${notifiable.hashCode()}Wrapper".filter(_.isLetterOrDigit)
     val wrapper = system.actorOf(Props(classOf[NotifiableReapingActor], notifiable), id)
-    watch(wrapper)
+    watch(wrapper, phase)
   }
 
-  def reapAsync()(implicit timeout: Timeout = 60.seconds): Future[akka.Done] = {
-    (reaper ? ReaperActor.Reap).mapTo[akka.Done]
+  def reapAsync(phase: ManagedShutdownPhase)(implicit timeout: Timeout = 60.seconds): Future[akka.Done] = {
+    (reaper(phase) ? ReaperActor.Reap).mapTo[akka.Done]
+  }
+
+  private[this] def reaper(phase: ManagedShutdownPhase): ActorRef = phase match {
+    case ManagedShutdownPhase.ServiceUnbind => reaperUnbind
+    case ManagedShutdownPhase.ServiceRequestsDone => reaperRequestsDone
+    case ManagedShutdownPhase.ServiceStop => reaperStop
   }
 }
