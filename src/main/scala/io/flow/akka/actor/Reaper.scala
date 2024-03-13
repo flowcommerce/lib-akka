@@ -6,7 +6,6 @@ import akka.util.Timeout
 import io.flow.util.ShutdownNotified
 
 import scala.concurrent.Future
-import scala.concurrent.duration.DurationInt
 
 /** To have an ActorRef terminated early in the CoordinatedShutdown process:
   *
@@ -38,7 +37,7 @@ final class Reaper private[actor] (system: ActorSystem) extends Extension {
     watch(wrapper, phase)
   }
 
-  def reapAsync(phase: ManagedShutdownPhase)(implicit timeout: Timeout = 60.seconds): Future[akka.Done] = {
+  def reapAsync(phase: ManagedShutdownPhase)(implicit timeout: Timeout): Future[akka.Done] = {
     (reaper(phase) ? ReaperActor.Reap).mapTo[akka.Done]
   }
 
