@@ -19,7 +19,16 @@ private[actor] final class ReaperActor @Inject() (
 ) extends Actor
   with ActorLogging {
   private[this] val watchedActors = MutableListBuffer.empty[ActorRef] // Ordering is important to us
-  private[this] val reapedActors = MutableListBuffer.empty[ActorRef] // Who we have sent a PoisonPill to
+  private[this] val notifiedActors = MutableListBuffer.empty[ActorRef] // Who we have sent a PoisonPill to
+
+  override def postStop(): Unit = {
+    if (watchedActors.isEmpty && notifiedActors.nonEmpty) {
+      log.info(s"Successfully reaped all watched actors (${notifiedActors.size})")
+    }
+    watchedActors.foreach { ref =>
+      log.warning(s"Did not receive terminated msg from: ${ref.path.toStringWithoutAddress}")
+    }
+  }
 
   override def receive: Receive = {
     case ReaperActor.Watch(ref) =>
@@ -35,12 +44,12 @@ private[actor] final class ReaperActor @Inject() (
         sender() ! akka.Done
       } else {
         // Use LIFO in an attempt to unwind how the application initialized
-        val targets = watchedActors.filterNot(reapedActors.contains).reverse
+        val targets = watchedActors.filterNot(notifiedActors.contains).reverse
         if (targets.nonEmpty) {
           log.info(s"Sending stop to (${targets.size}) watched actors")
           targets.foreach { ref =>
             ref ! PoisonPill // Allow actors to process all messages in mailbox before stopping
-            reapedActors += ref
+            notifiedActors += ref
           }
         }
         self forward ReaperActor.Reap
@@ -48,7 +57,6 @@ private[actor] final class ReaperActor @Inject() (
 
     case Terminated(ref) =>
       watchedActors -= ref
-      reapedActors -= ref
       log.info(s"Stopped watching ${ref.path}")
   }
 }
