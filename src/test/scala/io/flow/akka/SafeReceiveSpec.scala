@@ -17,7 +17,7 @@ class SafeReceiveSpec
   with Matchers
   with BeforeAndAfterAll {
 
-  implicit val mockRollbar = RollbarLogger.SimpleLogger
+  implicit val mockRollbar: RollbarLogger = RollbarLogger.SimpleLoggergs
 
   override def afterAll(): Unit = {
     TestKit.shutdownActorSystem(system)
