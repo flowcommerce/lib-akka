@@ -1,7 +1,7 @@
 name := "lib-akka-akka26"
 organization := "io.flow"
 
-scalaVersion := "2.13.13"
+scalaVersion := "2.13.14"
 ThisBuild / javacOptions ++= Seq("-source", "17", "-target", "17")
 
 enablePlugins(GitVersioning)
@@ -35,8 +35,8 @@ lazy val akkaVersion = "2.6.20"
 
 libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.5.2",
-  "io.flow" %% "lib-util" % "0.2.45",
-  "io.flow" %% s"lib-log" % "0.2.22",
+  "io.flow" %% "lib-util" % "0.2.46",
+  "io.flow" %% s"lib-log" % "0.2.23",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Provided,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
   "com.typesafe.play" %% "play-json" % "2.9.4" % Provided,
