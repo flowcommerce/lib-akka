@@ -31,7 +31,9 @@ licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
 resolvers += "Artifactory" at "https://flow.jfrog.io/flow/libs-release/"
 
-lazy val akkaVersion = "2.6.20"
+
+lazy val akkaVersion = "2.6.21"
+lazy val playJsonVersion = "2.10.0" // Play 2.9.x
 
 libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.5.2",
@@ -39,10 +41,10 @@ libraryDependencies ++= Seq(
   "io.flow" %% s"lib-log" % "0.2.28",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Provided,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
-  "com.typesafe.play" %% "play-json" % "2.9.4" % Provided,
+  "com.typesafe.play" %% "play-json" % playJsonVersion % Provided,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
-  "org.scalatest" %% "scalatest" % "3.2.18" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "org.scalatest" %% "scalatest-mustmatchers" % "3.2.19" % Test,
   "org.scalatest" %% "scalatest-wordspec" % "3.2.19" % Test,
 )
