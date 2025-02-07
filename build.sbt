@@ -1,4 +1,4 @@
-name := "lib-akka-akka26"
+name := "lib-akka-play29"
 organization := "io.flow"
 
 scalaVersion := "2.13.15"
@@ -31,15 +31,15 @@ licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
 resolvers += "Artifactory" at "https://flow.jfrog.io/flow/libs-release/"
 
-lazy val akkaVersion = "2.6.20"
+lazy val akkaVersion = "2.6.21"
 
 libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.5.2",
   "io.flow" %% "lib-util" % "0.2.50",
-  "io.flow" %% s"lib-log" % "0.2.29",
+  "io.flow" %% "lib-log-play29" % "0.2.32",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Provided,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
-  "com.typesafe.play" %% "play-json" % "2.9.4" % Provided,
+  "com.typesafe.play" %% "play-json" % "2.10.6" % Provided,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
   "org.scalatest" %% "scalatest" % "3.2.18" % Test,
@@ -61,6 +61,11 @@ credentials += Credentials(
   System.getenv("ARTIFACTORY_USERNAME"),
   System.getenv("ARTIFACTORY_PASSWORD"),
 )
+
+ThisBuild / isSnapshot := {
+  if (sys.props.get("project.version").nonEmpty) false // set on play296 branch in skeletonLibraryPipeline
+  else git.gitCurrentTags.value.isEmpty || git.gitUncommittedChanges.value
+}
 
 publishTo := {
   val host = "https://flow.jfrog.io/flow"
