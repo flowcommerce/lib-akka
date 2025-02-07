@@ -3,6 +3,7 @@ organization := "io.flow"
 
 scalaVersion := "2.13.15"
 ThisBuild / javacOptions ++= Seq("-source", "17", "-target", "17")
+ThisBuild / isSnapshot := false // TODO - remove
 
 enablePlugins(GitVersioning)
 git.useGitDescribe := true
@@ -61,11 +62,6 @@ credentials += Credentials(
   System.getenv("ARTIFACTORY_USERNAME"),
   System.getenv("ARTIFACTORY_PASSWORD"),
 )
-
-ThisBuild / isSnapshot := {
-  if (sys.props.get("project.version").nonEmpty) false // set on play296 branch in skeletonLibraryPipeline
-  else git.gitCurrentTags.value.isEmpty || git.gitUncommittedChanges.value
-}
 
 publishTo := {
   val host = "https://flow.jfrog.io/flow"
