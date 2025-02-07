@@ -63,11 +63,6 @@ credentials += Credentials(
   System.getenv("ARTIFACTORY_PASSWORD"),
 )
 
-ThisBuild / isSnapshot := {
-  if (sys.props.get("project.version").nonEmpty) false // set on play296 branch in skeletonLibraryPipeline
-  else git.gitCurrentTags.value.isEmpty || git.gitUncommittedChanges.value
-}
-
 publishTo := {
   val host = "https://flow.jfrog.io/flow"
   if (isSnapshot.value) {
