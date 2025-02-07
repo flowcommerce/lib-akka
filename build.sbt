@@ -1,7 +1,4 @@
-name := {
-  if (sys.props.get("project.version").nonEmpty) "lib-akka-play29" // property set on play296 branch in skeletonLibraryPipeline
-  else "lib-akka-akka26"
-}
+name := "lib-akka-play29"
 organization := "io.flow"
 
 scalaVersion := "2.13.15"
