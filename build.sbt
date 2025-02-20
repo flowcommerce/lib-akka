@@ -3,7 +3,6 @@ organization := "io.flow"
 
 scalaVersion := "2.13.15"
 ThisBuild / javacOptions ++= Seq("-source", "17", "-target", "17")
-ThisBuild / isSnapshot := false // TODO - remove
 
 enablePlugins(GitVersioning)
 git.useGitDescribe := true
