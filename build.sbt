@@ -34,7 +34,7 @@ resolvers += "Artifactory" at "https://flow.jfrog.io/flow/libs-release/"
 lazy val akkaVersion = "2.6.21"
 
 libraryDependencies ++= Seq(
-  "com.google.inject" % "guice" % "6.0.0" % Provided,
+  "com.google.inject" % "guice" % "7.0.0" % Provided,
   "com.google.inject.extensions" % "guice-assistedinject" % "6.0.0" % Provided,
   "com.iheart" %% "ficus" % "1.5.2",
   "io.flow" %% "lib-util" % "0.2.58",
