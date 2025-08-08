@@ -35,7 +35,7 @@ lazy val akkaVersion = "2.6.21"
 
 libraryDependencies ++= Seq(
   "com.google.inject" % "guice" % "7.0.0" % Provided,
-  "com.google.inject.extensions" % "guice-assistedinject" % "6.0.0" % Provided,
+  "com.google.inject.extensions" % "guice-assistedinject" % "7.0.0" % Provided,
   "com.iheart" %% "ficus" % "1.5.2",
   "io.flow" %% "lib-util" % "0.2.58",
   "io.flow" %% "lib-log-play29" % "0.2.43",
