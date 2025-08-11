@@ -43,7 +43,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
-  "org.scalatest" %% "scalatest" % "3.2.18" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "org.scalatest" %% "scalatest-mustmatchers" % "3.2.19" % Test,
   "org.scalatest" %% "scalatest-wordspec" % "3.2.19" % Test,
 )
