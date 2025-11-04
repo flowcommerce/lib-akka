@@ -1,7 +1,7 @@
 name := "lib-akka-play29"
 organization := "io.flow"
 
-scalaVersion := "2.13.16"
+scalaVersion := "2.13.17"
 ThisBuild / javacOptions ++= Seq("-source", "17", "-target", "17")
 
 enablePlugins(GitVersioning)
