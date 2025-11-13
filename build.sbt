@@ -38,7 +38,7 @@ libraryDependencies ++= Seq(
   "com.google.inject.extensions" % "guice-assistedinject" % "6.0.0" % Provided,
   "com.iheart" %% "ficus" % "1.5.2",
   "io.flow" %% "lib-util" % "0.2.70",
-  "io.flow" %% "lib-log-play29" % "0.2.63",
+  "io.flow" %% "lib-log-play29" % "0.2.64",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Provided,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Provided,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
